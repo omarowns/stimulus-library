@@ -11,9 +11,9 @@ export class LightboxImageController extends BaseController {
   static classes = ["modal", "image"];
 
   declare readonly hasModalClass: boolean;
-  declare readonly modalClass: string;
+  declare readonly modalClasses: [string];
   declare readonly hasImageClass: boolean;
-  declare readonly imageClass: string;
+  declare readonly imageClasses: string;
   declare readonly hasSrcValue: boolean;
   declare readonly srcValue: string;
   declare readonly hasSrcSetValue: boolean;
@@ -34,12 +34,12 @@ export class LightboxImageController extends BaseController {
     return this.hasSizesValue ? this.sizesValue : (this.el as HTMLImageElement).sizes;
   }
 
-  get _modalClassName() {
-    return this.hasModalClass ? this.modalClass : "image-lightbox-dialog";
+  get _modalClassesName() {
+    return this.hasModalClass ? this.modalClasses : ["image-lightbox-dialog"];
   }
 
-  get _imageClassName() {
-    return this.hasImageClass ? this.imageClass : "image-lightbox-image";
+  get _imageClassesName() {
+    return this.hasImageClass ? this.imageClasses : ["image-lightbox-image"];
   }
 
   initialize() {
@@ -62,14 +62,14 @@ export class LightboxImageController extends BaseController {
     this._dialog = document.createElement("dialog");
 
     const image = document.createElement("img") as HTMLImageElement;
-    image.className = this._imageClassName;
+    image.classList.add(...this._imageClassesName);
     image.src = this._src;
     image.srcset = this._srcSet;
     image.sizes = this._sizes;
     this._dialog.appendChild(image);
 
     element.insertAdjacentElement("afterend", this._dialog);
-    this._dialog.className = this._modalClassName;
+    this._dialog.classList.add(...this._modalClassesName);
     this._dialog.showModal();
     scrollToElement(this._dialog, { behavior: "smooth", block: "end" }).catch(() => this._dialog!.scrollIntoView(false));
     useEventListener(this, this._dialog, "click", this.close);
